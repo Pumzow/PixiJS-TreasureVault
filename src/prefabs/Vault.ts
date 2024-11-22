@@ -1,7 +1,7 @@
 import { Debug } from "../utils/debug";
 import Keyboard from "../core/Keyboard";
 import { Container } from "pixi.js";
-import { getRandomNumber } from "../utils/misc";
+import { getRandomNumberBetween } from "../utils/misc";
 
 export class Vault extends Container {
     private pairs!: CombinationPair[];
@@ -47,7 +47,7 @@ export class Vault extends Container {
         let direction = getRandomNumber(0, 1);
 
         for (let i = 0; i < 3; i++) {
-            const rotations = getRandomNumber(1, 9);
+            const rotations = getRandomNumberBetween(1, 9);
             this.pairs.push(new CombinationPair(direction, rotations));
             combinationLog.push(rotations + " " + Direction[direction]);
             direction = direction === 0 ? 1 : 0;
