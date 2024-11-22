@@ -35,21 +35,21 @@ export class Vault extends Container {
         this.background.scale.set(scaleFactor);
         this.background.anchor.set(.5);
         this.addChild(this.background);
-        
+
         this.generateCombination();
     }
 
     async rotate(direction: Direction) {
-        if(this.busy) return;
+        if (this.busy) return;
         this.busy = true;
-        if (this.pairs[0].getDirection() !== direction) {
+        if (this.pairs.length > 0 && this.pairs[0].getDirection() !== direction) {
             // FAIL STATE
             Debug.log("WRONG VAULT COMBINATION!");
             Debug.log("RESTARTING GAME...");
 
-            this.door.spinHandleLikeCrazy();
-
             this.generateCombination();
+
+            this.door.spinHandleLikeCrazy();
             await wait(config.spinLikeCrazyTime).then(() => this.busy = false);
             return;
         }
@@ -67,6 +67,14 @@ export class Vault extends Container {
             if (this.pairs.length === 0) {
                 // COMPLETE STATE 
                 Debug.log("VAULT UNLOCKED!");
+                this.door.Open();
+                await wait(config.gameRestartTime).then(() => {
+                    this.generateCombination();
+
+                    this.door.Close();
+                    this.door.spinHandleLikeCrazy();
+                    wait(config.spinLikeCrazyTime).then(() => { this.busy = false})
+                });
             }
         }
     }

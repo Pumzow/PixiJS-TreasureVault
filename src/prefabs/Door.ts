@@ -16,6 +16,16 @@ export class Door extends Container {
         this.initOpenDoor();
     }
 
+    public Open(){
+        this.closedDoor.visible = false;
+        this.openedContainer.visible = true;
+    }
+
+    public Close(){
+        this.closedDoor.visible = true;
+        this.openedContainer.visible = false;
+    }
+
     private initClosedDoor() {
         this.closedDoor = Sprite.from("door");
         const scaleFactor = window.innerHeight / this.closedDoor.height * .60;

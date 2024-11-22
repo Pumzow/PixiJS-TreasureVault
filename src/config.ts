@@ -1,6 +1,7 @@
 export const config = {
     rotationTime: 1,
     spinLikeCrazyTime: 3,
+    gameRestartTime: 5,
 }
 
 export enum Direction {
