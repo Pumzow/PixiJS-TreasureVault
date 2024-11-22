@@ -105,9 +105,9 @@ export class Vault extends Container {
         this.background.width = width / scaleFactor;
         this.background.scale.set(scaleFactor);
 
-        centerObjects(this);
-
         this.door.resize(width, height);
+
+        centerObjects(this);
     }
 }
 
