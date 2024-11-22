@@ -29,6 +29,9 @@ export function getEntries<T extends object>(obj: T) {
   return Object.entries(obj) as Entries<T>;
 }
 
+export function pickRandom<T>(options: T[]): T {
+  return options[Math.floor(Math.random() * options.length)];
+}
 
 export function getRandomNumberBetween(min: number, max: number): number {
     if (min + 1 > max - 1) {
