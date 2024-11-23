@@ -39,13 +39,13 @@ export class Handle extends Container {
     private spin(rotation: number, duration: number){
         gsap.to(this.sprite, {
             rotation: this.sprite.rotation + rotation,
-            duration: duration, 
+            duration: duration - 0.1, 
             ease: "power1.inOut"
         });
 
         gsap.to(this.shadow, {
             rotation: this.sprite.rotation + rotation,
-            duration: duration, 
+            duration: duration - 0.1, 
             ease: "power1.inOut"
         });
     }
