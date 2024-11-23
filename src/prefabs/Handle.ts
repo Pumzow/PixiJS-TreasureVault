@@ -1,7 +1,6 @@
 import gsap from "gsap";
 import { Container, Point, Sprite } from "pixi.js";
 import { config } from "../config";
-import { Debug } from "../utils/debug";
 import { Direction } from "../config";
 import { wait } from "../utils/misc";
 
@@ -61,7 +60,6 @@ export class Handle extends Container {
     }
 
     private async spin(rotation: number, duration: number) {
-        Debug.log("Spin")
         this.isBusy = true;
 
         gsap.to(this.sprite, {
@@ -95,7 +93,7 @@ export class Handle extends Container {
             endPoint = new Point(position.x, position.y);
 
             if (startPoint && endPoint) {
-                const direction = this.calculateHorizontalDirection(startPoint, endPoint);
+                const direction = this.getDirection(startPoint, endPoint);
                 if(direction === Direction.NONE) return;
                 this.spinHandle(direction);
             }
@@ -105,12 +103,12 @@ export class Handle extends Container {
         });
     }
 
-    private calculateHorizontalDirection(start: Point, end: Point): Direction {
-        const dx = end.x - start.x;
+    private getDirection(start: Point, end: Point): Direction {
+        const xDistance = end.x - start.x;
 
-        if (dx > 0) {
+        if (xDistance > 0) {
             return Direction.CLOCKWISE;
-        } else if (dx < 0) {
+        } else if (xDistance < 0) {
             return Direction.COUNTERCLOCKWISE;
         }
 

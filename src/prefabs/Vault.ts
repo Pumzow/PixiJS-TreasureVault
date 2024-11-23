@@ -1,5 +1,4 @@
 import { Debug } from "../utils/debug";
-import Keyboard from "../core/Keyboard";
 import { Container, Sprite } from "pixi.js";
 import { centerObjects, pickRandom, getRandomNumberBetween, wait } from "../utils/misc";
 import { Door } from "./Door";
@@ -9,7 +8,6 @@ import { Handle } from "./Handle";
 
 export class Vault extends Container {
     private pairs!: CombinationPair[];
-    private keyboard = Keyboard.getInstance();
     private door!: Door;
     private background!: Sprite;
     private timer: Timer;
@@ -33,11 +31,6 @@ export class Vault extends Container {
             this.onHandleRotation(direction);
         };
         this.handle.onRotate.add(handleRotationObserver);
-
-        // INPUT FOR DEBUGGING
-        this.keyboard.onAction(({ action, buttonState }) => {
-            if (buttonState === "pressed") this.onActionPress(action);
-        });
     }
 
     private init() {
@@ -54,16 +47,11 @@ export class Vault extends Container {
     private onHandleRotation(direction: Direction) {
         if (this.pairs.length === 0) return;
         if (this.pairs[0].getDirection() !== direction) {
-            // FAIL STATE
-            Debug.log("WRONG VAULT COMBINATION!");
-            Debug.log("RESTARTING GAME...");
-
             this.Fail();
             return;
         }
 
         const rotationsLeft = this.pairs[0].subtractRotations();
-        Debug.log(`${rotationsLeft} ${Direction[direction]} rotations left.`);
         if (rotationsLeft === 0) {
             if (this.pairs.length > 0) {
                 this.pairs.splice(0, 1);
@@ -76,7 +64,6 @@ export class Vault extends Container {
     }
 
     private async UnlockVault() {
-        Debug.log("VAULT UNLOCKED!");
         this.timer.pause();
         this.door.Open();
         await wait(config.gameRestartTime).then(() => {
@@ -114,23 +101,6 @@ export class Vault extends Container {
             direction = direction === -1 ? 1 : -1;
         }
         Debug.log(combinationLog.join(", "));
-    }
-
-    private onActionPress(action: keyof typeof Keyboard.actions) {
-        switch (action) {
-            case "LEFT":
-                this.onHandleRotation(Direction.COUNTERCLOCKWISE);
-                break;
-            case "RIGHT":
-                this.onHandleRotation(Direction.CLOCKWISE);
-                break;
-            case "JUMP":
-                this.door.Open();
-                break;
-
-            default:
-                break;
-        }
     }
 
     resize(width: number, height: number) {

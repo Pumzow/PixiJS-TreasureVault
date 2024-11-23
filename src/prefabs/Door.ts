@@ -3,6 +3,8 @@ import { Container, Sprite } from "pixi.js";
 import { Handle } from "./Handle";
 import { pickRandom, wait } from "../utils/misc";
 
+const glitterAnchors = [{ x: 1.32, y: 0.54 }, { x: 0.25, y: -0.04 }, { x: 0.65, y: 0.561 }]
+
 export class Door extends Container {
     private closedDoor!: Sprite;
     private openedDoor!: Sprite;
@@ -76,14 +78,13 @@ export class Door extends Container {
     }
 
     private async initGlitterEffect() {
-        const anchors = [{ x: 1.32, y: 0.54 }, { x: 0.25, y: -0.04 }, { x: 0.65, y: 0.561 }]
         this.cachedGlithers = [];
 
         for (let i = 0; i < 3; i++) {
             await wait(.5).then(() => {
                 const glitter = Sprite.from("blink");
                 glitter.name = `${i + 1}`;
-                glitter.anchor.set(anchors[i].x, anchors[i].y);
+                glitter.anchor.set(glitterAnchors[i].x, glitterAnchors[i].y);
                 glitter.alpha = 0;
                 this.resizeSprite(glitter, window.innerWidth, window.innerHeight / glitter.texture.height * .21)
 
