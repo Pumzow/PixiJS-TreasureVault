@@ -6,5 +6,6 @@ export const config = {
 
 export enum Direction {
     CLOCKWISE = 1,
-    COUNTERCLOCKWISE = -1
+    COUNTERCLOCKWISE = -1,
+    NONE = 0
 }

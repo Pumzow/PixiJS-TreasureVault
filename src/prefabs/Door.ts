@@ -1,7 +1,6 @@
 import gsap from "gsap";
 import { Container, Sprite } from "pixi.js";
 import { Handle } from "./Handle";
-import { Direction } from "../config";
 import { pickRandom, wait } from "../utils/misc";
 
 export class Door extends Container {
@@ -22,6 +21,10 @@ export class Door extends Container {
 
         this.initClosedDoor();
         this.initOpenDoor();
+    }
+
+    public getHandle(): Handle{
+        return this.handle;
     }
 
     public Open() {
@@ -75,7 +78,7 @@ export class Door extends Container {
     private async initGlitterEffect() {
         const anchors = [{ x: 1.32, y: 0.54 }, { x: 0.25, y: -0.04 }, { x: 0.65, y: 0.561 }]
         this.cachedGlithers = [];
-        
+
         for (let i = 0; i < 3; i++) {
             await wait(.5).then(() => {
                 const glitter = Sprite.from("blink");
@@ -102,14 +105,6 @@ export class Door extends Container {
                     });
             });
         }
-    }
-
-    public spinHandle(direction: Direction) {
-        this.handle.spinHandle(direction);
-    }
-
-    public spinHandleLikeCrazy() {
-        this.handle.spinLikeCrazy();
     }
 
     public resize(width: number, height: number) {

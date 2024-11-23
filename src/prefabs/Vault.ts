@@ -4,23 +4,30 @@ import { Container, Sprite } from "pixi.js";
 import { centerObjects, pickRandom, getRandomNumberBetween, wait } from "../utils/misc";
 import { Door } from "./Door";
 import { config, Direction } from "../config";
+import { Handle } from "./Handle";
 
 export class Vault extends Container {
     private pairs!: CombinationPair[];
     private keyboard = Keyboard.getInstance();
     private door!: Door;
     private background!: Sprite;
-    private busy: Boolean;
+    private handle!: Handle;
 
     constructor() {
         super();
-        this.busy = false;
         this.init();
 
         this.door = new Door();
         this.addChild(this.door);
 
         centerObjects(this);
+
+        this.handle = this.door.getHandle();
+        const handleRotationObserver = (direction: Direction) => {
+            if(direction === Direction.NONE) return;
+            this.onHandleRotation(direction);
+        };
+        this.handle.onRotate.add(handleRotationObserver);
 
         // INPUT FOR DEBUGGING
         this.keyboard.onAction(({ action, buttonState }) => {
@@ -39,23 +46,16 @@ export class Vault extends Container {
         this.generateCombination();
     }
 
-    async rotate(direction: Direction) {
-        if (this.busy) return;
-        this.busy = true;
-        if (this.pairs.length > 0 && this.pairs[0].getDirection() !== direction) {
+    private onHandleRotation(direction: Direction) {
+        if (this.pairs.length === 0) return;
+        if (this.pairs[0].getDirection() !== direction) {
             // FAIL STATE
             Debug.log("WRONG VAULT COMBINATION!");
             Debug.log("RESTARTING GAME...");
 
-            this.generateCombination();
-
-            this.door.spinHandleLikeCrazy();
-            await wait(config.spinLikeCrazyTime).then(() => this.busy = false);
+            this.Fail();
             return;
         }
-
-        this.door.spinHandle(direction);
-        await wait(config.rotationTime).then(() => this.busy = false);
 
         const rotationsLeft = this.pairs[0].subtractRotations();
         Debug.log(`${rotationsLeft} ${Direction[direction]} rotations left.`);
@@ -65,18 +65,26 @@ export class Vault extends Container {
             }
 
             if (this.pairs.length === 0) {
-                // COMPLETE STATE 
-                Debug.log("VAULT UNLOCKED!");
-                this.door.Open();
-                await wait(config.gameRestartTime).then(() => {
-                    this.generateCombination();
-
-                    this.door.Close();
-                    this.door.spinHandleLikeCrazy();
-                    wait(config.spinLikeCrazyTime).then(() => { this.busy = false})
-                });
+                this.UnlockVault();
             }
         }
+    }
+
+    private async UnlockVault() {
+        Debug.log("VAULT UNLOCKED!");
+        this.door.Open();
+        await wait(config.gameRestartTime).then(() => {
+            this.generateCombination();
+
+            this.door.Close();
+            this.handle.spinLikeCrazy();
+        });
+    }
+
+    private async Fail() {
+        this.generateCombination();
+
+        this.handle.spinLikeCrazy();
     }
 
     private generateCombination() {
@@ -96,10 +104,13 @@ export class Vault extends Container {
     private onActionPress(action: keyof typeof Keyboard.actions) {
         switch (action) {
             case "LEFT":
-                this.rotate(Direction.COUNTERCLOCKWISE);
+                this.onHandleRotation(Direction.COUNTERCLOCKWISE);
                 break;
             case "RIGHT":
-                this.rotate(Direction.CLOCKWISE);
+                this.onHandleRotation(Direction.CLOCKWISE);
+                break;
+            case "JUMP":
+                this.door.Open();
                 break;
 
             default:
