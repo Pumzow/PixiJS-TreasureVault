@@ -25,18 +25,18 @@ export class Door extends Container {
         this.initOpenDoor();
     }
 
-    public getHandle(): Handle{
+    public getHandle(): Handle {
         return this.handle;
     }
 
-    public Open() {
+    public open() {
         this.closedDoor.visible = false;
         this.openedContainer.visible = true;
 
         this.initGlitterEffect();
     }
 
-    public Close() {
+    public close() {
         this.closedDoor.visible = true;
         this.openedContainer.visible = false;
 
@@ -93,17 +93,13 @@ export class Door extends Container {
 
                 this.cachedGlithers.push(glitter);
 
-                gsap.timeline({ repeat: -1 })
-                    .to(glitter, {
-                        alpha: 1,
-                        duration: pickRandom([1, .7]),
-                        ease: "power1.inOut",
-                    })
-                    .to(glitter, {
-                        alpha: 0,
-                        duration: pickRandom([1, .7]),
-                        ease: "power1.inOut",
-                    });
+                gsap.to(glitter, {
+                    alpha: 1,
+                    duration: pickRandom([1, .7]),
+                    ease: "power1.inOut",
+                    yoyo: true,
+                    repeat: -1
+                });
             });
         }
     }

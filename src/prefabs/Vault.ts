@@ -27,7 +27,7 @@ export class Vault extends Container {
 
         this.handle = this.door.getHandle();
         const handleRotationObserver = (direction: Direction) => {
-            if(direction === Direction.NONE) return;
+            if (direction === Direction.NONE) return;
             this.onHandleRotation(direction);
         };
         this.handle.onRotate.add(handleRotationObserver);
@@ -47,7 +47,7 @@ export class Vault extends Container {
     private onHandleRotation(direction: Direction) {
         if (this.pairs.length === 0) return;
         if (this.pairs[0].getDirection() !== direction) {
-            this.Fail();
+            this.fail();
             return;
         }
 
@@ -58,35 +58,36 @@ export class Vault extends Container {
             }
 
             if (this.pairs.length === 0) {
-                this.UnlockVault();
+                this.unlockVault();
             }
         }
     }
 
-    private async UnlockVault() {
+    private async unlockVault() {
         this.timer.pause();
-        this.door.Open();
-        await wait(config.gameRestartTime).then(() => {
-            this.generateCombination();
+        this.door.open();
 
-            this.door.Close();
-            this.handle.spinLikeCrazy();
-            this.timer.reset();
-            wait(config.spinLikeCrazyTime).then(() => {
-                this.timer.resume();
-            });
-        });
+        await wait(config.gameRestartTime);
+
+        this.generateCombination();
+        this.door.close();
+        this.handle.spinLikeCrazy();
+        this.timer.reset();
+
+        await wait(config.spinLikeCrazyTime);
+
+        this.timer.resume();
     }
 
-    private async Fail() {
+    private async fail() {
         this.generateCombination();
-
         this.handle.spinLikeCrazy();
         this.timer.pause();
         this.timer.reset();
-        await wait(config.spinLikeCrazyTime).then(() => {
-            this.timer.resume();
-        });
+
+        await wait(config.spinLikeCrazyTime);
+
+        this.timer.resume();
     }
 
     private generateCombination() {

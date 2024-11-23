@@ -50,7 +50,10 @@ export class Handle extends Container {
         if(this.isBusy) return;
         const rotation = direction * 60 * (Math.PI / 180);
         this.spin(rotation, config.rotationTime);
-        await wait(config.rotationTime).then(() => this.onRotate.invoke(direction));
+
+        await wait(config.rotationTime);
+
+        this.onRotate.invoke(direction)
     }
 
     public spinLikeCrazy() {
@@ -62,19 +65,15 @@ export class Handle extends Container {
     private async spin(rotation: number, duration: number) {
         this.isBusy = true;
 
-        gsap.to(this.sprite, {
+        gsap.to([this.sprite, this.shadow], {
             rotation: this.sprite.rotation + rotation,
             duration: duration - 0.1,
             ease: "power1.inOut"
         });
 
-        gsap.to(this.shadow, {
-            rotation: this.sprite.rotation + rotation,
-            duration: duration - 0.1,
-            ease: "power1.inOut"
-        });
+        await wait(duration);
 
-        await wait(duration).then(() => this.isBusy = false);
+        this.isBusy = false
     }
 
     private initDragInput() {
