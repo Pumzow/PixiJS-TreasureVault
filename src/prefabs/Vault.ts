@@ -4,6 +4,7 @@ import { Container, Sprite } from "pixi.js";
 import { centerObjects, pickRandom, getRandomNumberBetween, wait } from "../utils/misc";
 import { Door } from "./Door";
 import { config, Direction } from "../config";
+import { Timer } from "./Timer";
 import { Handle } from "./Handle";
 
 export class Vault extends Container {
@@ -11,6 +12,7 @@ export class Vault extends Container {
     private keyboard = Keyboard.getInstance();
     private door!: Door;
     private background!: Sprite;
+    private timer: Timer;
     private handle!: Handle;
 
     constructor() {
@@ -19,6 +21,9 @@ export class Vault extends Container {
 
         this.door = new Door();
         this.addChild(this.door);
+
+        this.timer = new Timer();
+        this.addChild(this.timer);
 
         centerObjects(this);
 
@@ -72,12 +77,17 @@ export class Vault extends Container {
 
     private async UnlockVault() {
         Debug.log("VAULT UNLOCKED!");
+        this.timer.pause();
         this.door.Open();
         await wait(config.gameRestartTime).then(() => {
             this.generateCombination();
 
             this.door.Close();
             this.handle.spinLikeCrazy();
+            this.timer.reset();
+            wait(config.spinLikeCrazyTime).then(() => {
+                this.timer.resume();
+            });
         });
     }
 
@@ -85,6 +95,11 @@ export class Vault extends Container {
         this.generateCombination();
 
         this.handle.spinLikeCrazy();
+        this.timer.pause();
+        this.timer.reset();
+        await wait(config.spinLikeCrazyTime).then(() => {
+            this.timer.resume();
+        });
     }
 
     private generateCombination() {
@@ -125,6 +140,7 @@ export class Vault extends Container {
         this.background.scale.set(scaleFactor);
 
         this.door.resize(width, height);
+        this.timer.resize(width, height);
 
         centerObjects(this);
     }
