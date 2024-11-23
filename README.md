@@ -1,41 +1,39 @@
-## 🎮 Simple 2D Game Framework for [PixiJS](https://pixijs.com) using [Vite⚡](https://vitejs.dev/)
+## 🪙 Treasure Vault
+**Treasure Vault** is an interactive game built with PixiJS. The challenge is to crack the vault code by rotating the handle and entering the correct combination. Test your precision and speed as you race against the timer to unlock the vault and reveal its hidden treasure of gold! ⏱️💰
 
-<a href="https://pixi-framework.onrender.com/" target="_blank">Demo</a>
+### Features 🔮
 
-### Highlights 🌟
+- **Interactive Drag Mechanics**: Rotate the handle using drag gestures.
+- **Timer**: Tracks how long it takes you to open the vault.
+- **Gold Reward**: See the vault filled with treasure when you succeed.
+- Built with **PixiJS** for smooth and responsive gameplay.
 
-- Typescript
-- <a href="https://c.tenor.com/Hw0aKasI6B4AAAAC/fast-blazing-fast.gif" target="_blank">Blazing fast</a> builds and HMR through Vite
-- Scene management
-- Automagic asset loading per scene (sounds, spritesheets, textures, spine)
-- Keyboard input handling
-- Spine!
+   
+## How to Play 🕹
 
-## Usage 🛠️
+1. **Rotate the Vault Handle**:
+    - Click and drag the vault handle to rotate it.
+2. **Find the Correct Code**:
+    - Experiment with different positions to unlock the vault.
+3. **Open the Vault**:
+    - Once the correct code is found, the vault will open, revealing a treasure of gold!
+4. **Beat the Clock**:
+    - A timer displays how long it took you to unlock the vault. Try to improve your time with each attempt!
 
-1. Clone repository `npx degit https://github.com/Hafaux/pixi-framework.git new-folder`
+## Installation 🧰
 
-2. Navigate to the new directory and install the project dependencies using `npm install`
-
-### Spine
-
-Place your exported spine animations in the `public/<scene>/spine` folder. The framework will automatically load them when you create the scene.
-
-```typescript
-...
-const anim = new SpineAnimation("spine-name");
-
-parent.addChild(anim);
-
-await anim.play("anim-name");
-...
-
-```
-
-### Commands 💻
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Pumzow/PixiJS-TreasureVault.git
+   ```
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+## Commands 💻
 
 | Command           | Description                                                          |
 | ----------------- | -------------------------------------------------------------------- |
-| `npm run start`   | Run dev server                                                       |
-| `npm run build`   | Build project for production                                         |
-| `npm run preview` | Preview production build (must run `build` before running `preview`) |
+| `npm run start`   | Run dev environment to play the game                                                       |
+| `npm run build`   | Build the game                                        |
+| `npm run preview` | Preview game build (must run `build` before running `preview`) |
