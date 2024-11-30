@@ -12,12 +12,10 @@ export class Door extends Container {
     private openedContainer!: Container;
     private handle!: Handle;
     private glittersContainer!: Container;
-    private cachedGlithers!: Sprite[];
 
     constructor() {
         super();
 
-        this.cachedGlithers = [];
         this.glittersContainer = new Container();
         this.glittersContainer.name = "Blinks";
 
@@ -40,8 +38,8 @@ export class Door extends Container {
         this.closedDoor.visible = true;
         this.openedContainer.visible = false;
 
-        for (let i = 0; i < this.cachedGlithers.length; i++) {
-            this.glittersContainer.removeChild(this.cachedGlithers[i]);
+        while(this.glittersContainer.children[0]) { 
+            this.glittersContainer.removeChild(this.glittersContainer.children[0]);
         }
     }
 
@@ -78,20 +76,18 @@ export class Door extends Container {
     }
 
     private async initGlitterEffect() {
-        this.cachedGlithers = [];
-
         for (let i = 0; i < 3; i++) {
             await wait(.5).then(() => {
                 const glitter = Sprite.from("blink");
                 glitter.name = `${i + 1}`;
                 glitter.anchor.set(glitterAnchors[i].x, glitterAnchors[i].y);
                 glitter.alpha = 0;
-                this.resizeSprite(glitter, window.innerWidth, window.innerHeight / glitter.texture.height * .21)
+                const scaleFactor = window.innerHeight / glitter.texture.height * .21;
+                glitter.width = window.innerWidth / scaleFactor;
+                glitter.scale.set(scaleFactor);
 
                 this.glittersContainer.addChild(glitter);
                 this.openedContainer.addChild(this.glittersContainer);
-
-                this.cachedGlithers.push(glitter);
 
                 gsap.to(glitter, {
                     alpha: 1,
@@ -102,19 +98,5 @@ export class Door extends Container {
                 });
             });
         }
-    }
-
-    public resize(width: number, height: number) {
-        this.resizeSprite(this.closedDoor, width, height / this.closedDoor.texture.height * .60);
-        this.resizeSprite(this.openedDoor, width, height / this.openedDoor.texture.height * .61);
-        this.resizeSprite(this.openedDoorShadow, width, height / this.openedDoorShadow.texture.height * .61);
-        for (let i = 0; i < this.cachedGlithers.length; i++) {
-            this.resizeSprite(this.cachedGlithers[i], width, height / this.cachedGlithers[i].texture.height * .21)
-        }
-    }
-
-    private resizeSprite(sprite: Sprite, width: number, scaleFactor: number) {
-        sprite.width = width / scaleFactor;
-        sprite.scale.set(scaleFactor);
     }
 }

@@ -48,7 +48,7 @@ export class Handle extends Container {
 
     private async spinHandle(direction: Direction) {
         if(this.isBusy) return;
-        const rotation = direction * 60 * (Math.PI / 180);
+        const rotation = direction * config.rotationAngle * (Math.PI / 180);
 
         await this.spin(rotation, config.rotationTime);
 

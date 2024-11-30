@@ -95,23 +95,19 @@ export class Vault extends Container {
         const combinationLog: String[] = [];
         let direction = pickRandom([Direction.CLOCKWISE, Direction.COUNTERCLOCKWISE]);
 
-        for (let i = 0; i < 3; i++) {
-            const rotations = getRandomNumberBetween(1, 9);
+        for (let i = 0; i < config.combinationsNumber; i++) {
+            const rotations = getRandomNumberBetween(config.combinationsRange.min, config.combinationsRange.max);
             this.pairs.push(new CombinationPair(direction, rotations));
             combinationLog.push(rotations + " " + Direction[direction]);
-            direction = direction === -1 ? 1 : -1;
+            direction *= -1
         }
         Debug.log(combinationLog.join(", "));
     }
 
     resize(width: number, height: number) {
-        const scaleFactor = height / this.background.texture.height;
-
-        this.background.width = width / scaleFactor;
-        this.background.scale.set(scaleFactor);
-
-        this.door.resize(width, height);
-        this.timer.resize(width, height);
+        const scaleFactor = height / this.background.height;
+        this.width = width / scaleFactor;
+        this.scale.set(scaleFactor);        
 
         centerObjects(this);
     }

@@ -77,12 +77,4 @@ export class Timer extends Container {
 
         return `${formattedMinutes}:${formattedSeconds}`;
     }
-
-    public resize(width: number, height: number) {
-        const scaleFactor = height / backgroundConfig.height * .025;
-
-        this.background.width = width / scaleFactor;
-        this.background.scale.set(scaleFactor);
-        this.background.position.set(backgroundConfig.positionX * scaleFactor, backgroundConfig.positionY * scaleFactor);
-    }
 }
