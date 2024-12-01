@@ -65,7 +65,7 @@ export class Handle extends Container {
 
         await gsap.to([this.sprite, this.shadow], {
             rotation: this.sprite.rotation + rotation,
-            duration: duration - 0.1,
+            duration: duration,
             ease: "power1.inOut"
         });
 
