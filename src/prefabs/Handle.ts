@@ -2,7 +2,6 @@ import gsap from "gsap";
 import { Container, Point, Sprite } from "pixi.js";
 import { config } from "../config";
 import { Direction } from "../config";
-import { wait } from "../utils/misc";
 
 export class Handle extends Container {
     private isBusy: Boolean
@@ -48,29 +47,27 @@ export class Handle extends Container {
 
     private async spinHandle(direction: Direction) {
         if(this.isBusy) return;
-        const rotation = direction * config.rotationAngle * (Math.PI / 180);
+        const rotation = direction * config.spinRotationAngle * (Math.PI / 180);
 
-        await this.spin(rotation, config.rotationTime);
+        await this.spin(rotation, config.spinDuration);
 
         this.onRotate.invoke(direction)
     }
 
-    public spinLikeCrazy() {
+    public async spinLikeCrazy() {
         if(this.isBusy) return;
-        const rotation = this.sprite.rotation + Math.PI * 2 * 5;
-        this.spin(rotation, config.spinLikeCrazyTime);
+        const rotation = this.sprite.rotation + Math.PI * 2 * config.crazySpinsNumber;
+        await this.spin(rotation, config.crazySpinsDuration);
     }
 
     private async spin(rotation: number, duration: number) {
         this.isBusy = true;
 
-        gsap.to([this.sprite, this.shadow], {
+        await gsap.to([this.sprite, this.shadow], {
             rotation: this.sprite.rotation + rotation,
             duration: duration - 0.1,
             ease: "power1.inOut"
         });
-
-        await wait(duration);
 
         this.isBusy = false
     }

@@ -71,21 +71,18 @@ export class Vault extends Container {
 
         this.generateCombination();
         this.door.close();
-        this.handle.spinLikeCrazy();
         this.timer.reset();
-
-        await wait(config.spinLikeCrazyTime);
+        await this.handle.spinLikeCrazy();
 
         this.timer.resume();
     }
 
     private async fail() {
         this.generateCombination();
-        this.handle.spinLikeCrazy();
         this.timer.pause();
         this.timer.reset();
-
-        await wait(config.spinLikeCrazyTime);
+        
+        await this.handle.spinLikeCrazy();
 
         this.timer.resume();
     }

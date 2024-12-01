@@ -1,11 +1,5 @@
 import { Container, Graphics, Text, Ticker } from "pixi.js";
-
-const backgroundConfig = {
-    positionX: -314,
-    positionY: -39.5,
-    width: 50,
-    height: 20,
-};
+import { config } from "../config";
 
 export class Timer extends Container {
     private startTime: number;
@@ -21,17 +15,17 @@ export class Timer extends Container {
 
         this.background = new Graphics();
         this.background.beginFill(0x000000, 0.01);
-        this.background.drawRect(0, 0, backgroundConfig.width, backgroundConfig.height);
+        this.background.drawRect(0, 0, config.timerBackground.width, config.timerBackground.height);
         this.background.endFill();
         const scaleFactor = window.innerHeight / this.background.height * .025;
         this.background.scale.set(scaleFactor);
         this.background.pivot.set(this.background.width / 2, this.background.height / 2);
-        this.background.position.set(backgroundConfig.positionX * scaleFactor, backgroundConfig.positionY * scaleFactor);
+        this.background.position.set(config.timerBackground.positionX * scaleFactor, config.timerBackground.positionY * scaleFactor);
 
         this.display = new Text("00:00", {
-            fontFamily: "Impact",
-            fontSize: 18,
-            fill: "red",
+            fontFamily: config.timerFont,
+            fontSize: config.timerFontSize,
+            fill: config.timerInactiveColor,
         });
 
         this.display.anchor.set(.5);
@@ -54,18 +48,18 @@ export class Timer extends Container {
 
     public pause() {
         this.isPaused = true;
-        this.display.style.fill = "green";
+        this.display.style.fill = config.timerActiveColor;
     }
 
     public resume() {
         this.startTime = Date.now();
         this.isPaused = false;
-        this.display.style.fill = "red";
+        this.display.style.fill = config.timerInactiveColor;
     }
 
     public reset() {
-        this.display.style.fill = "red";
-        this.display.text = "RESET";
+        this.display.style.fill = config.timerInactiveColor;
+        this.display.text = config.timerRestartText;
     }
 
     private formatToMinutesSeconds(totalSeconds: number): string {
