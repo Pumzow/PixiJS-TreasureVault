@@ -1,9 +1,8 @@
 import gsap from "gsap";
 import { Container, Sprite } from "pixi.js";
 import { Handle } from "./Handle";
-import { pickRandom, wait } from "../utils/misc";
-
-const glitterAnchors = [{ x: 1.32, y: 0.54 }, { x: 0.25, y: -0.04 }, { x: 0.65, y: 0.561 }]
+import { getRandomNumber, wait } from "../utils/misc";
+import { config } from "../config";
 
 export class Door extends Container {
     private closedDoor!: Sprite;
@@ -38,7 +37,7 @@ export class Door extends Container {
         this.closedDoor.visible = true;
         this.openedContainer.visible = false;
 
-        while(this.glittersContainer.children[0]) { 
+        while (this.glittersContainer.children[0]) {
             this.glittersContainer.removeChild(this.glittersContainer.children[0]);
         }
     }
@@ -76,27 +75,33 @@ export class Door extends Container {
     }
 
     private async initGlitterEffect() {
-        for (let i = 0; i < 3; i++) {
-            await wait(.5).then(() => {
-                const glitter = Sprite.from("blink");
-                glitter.name = `${i + 1}`;
-                glitter.anchor.set(glitterAnchors[i].x, glitterAnchors[i].y);
-                glitter.alpha = 0;
-                const scaleFactor = window.innerHeight / glitter.texture.height * .21;
-                glitter.width = window.innerWidth / scaleFactor;
-                glitter.scale.set(scaleFactor);
+        const endTime = Date.now() + config.gameRestartTime * 1000;
 
-                this.glittersContainer.addChild(glitter);
-                this.openedContainer.addChild(this.glittersContainer);
+        while (Date.now() < endTime) {
+            const glitter = Sprite.from("blink");
+            glitter.name = "blink";
+            glitter.anchor.set(0.5, 0.5);
+            glitter.alpha = 0;
 
-                gsap.to(glitter, {
-                    alpha: 1,
-                    duration: pickRandom([1, .7]),
-                    ease: "power1.inOut",
-                    yoyo: true,
-                    repeat: -1
-                });
+            const scaleFactor = window.innerHeight / glitter.texture.height * 0.21;
+            glitter.width = window.innerWidth / scaleFactor;
+            glitter.scale.set(scaleFactor);
+
+            glitter.x = getRandomNumber(config.glitterEffect.position.minX, config.glitterEffect.position.maxX);
+            glitter.y = getRandomNumber(config.glitterEffect.position.minY, config.glitterEffect.position.maxY);
+
+            this.glittersContainer.addChild(glitter);
+            this.openedContainer.addChild(this.glittersContainer);
+
+            gsap.to(glitter, {
+                alpha: 1,
+                duration: getRandomNumber(config.glitterEffect.effectDuration.min, config.glitterEffect.effectDuration.max),
+                ease: "power1.inOut",
+                yoyo: true,
+                repeat: 1,
             });
+
+            await wait(config.glitterEffect.spawnRate);
         }
     }
 }
