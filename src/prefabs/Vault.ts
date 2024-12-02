@@ -1,6 +1,6 @@
 import { Debug } from "../utils/debug";
 import { Container, Sprite } from "pixi.js";
-import { centerObjects, pickRandom, getRandomNumberBetween, wait } from "../utils/misc";
+import { centerObjects, pickRandom, getRandomNumber, wait } from "../utils/misc";
 import { Door } from "./Door";
 import { config, Direction } from "../config";
 import { Timer } from "./Timer";
@@ -93,7 +93,7 @@ export class Vault extends Container {
         let direction = pickRandom([Direction.CLOCKWISE, Direction.COUNTERCLOCKWISE]);
 
         for (let i = 0; i < config.combinationsNumber; i++) {
-            const rotations = getRandomNumberBetween(config.combinationsRange.min, config.combinationsRange.max);
+            const rotations = getRandomNumber(config.combinationsRange.min, config.combinationsRange.max);
             this.pairs.push(new CombinationPair(direction, rotations));
             combinationLog.push(rotations + " " + Direction[direction]);
             direction *= -1

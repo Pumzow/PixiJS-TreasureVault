@@ -33,9 +33,9 @@ export function pickRandom<T>(options: T[]): T {
   return options[Math.floor(Math.random() * options.length)];
 }
 
-export function getRandomNumberBetween(min: number, max: number): number {
+export function getRandomNumber(min: number, max: number): number {
     if (min + 1 > max - 1) {
         throw new Error(`no in-between numbers (${min}-${max})`);
     }
-    return Math.floor(Math.random() * (max - min - 1)) + min + 1;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
